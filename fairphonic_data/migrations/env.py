@@ -1,14 +1,17 @@
 import os
 
+import sys
+
+sys.path = ['', '..'] + sys.path[1:]
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-
+from fairphonic_data.db.session import SessionLocal, engine
 from alembic import context
 
-from fairphonic_data.db.base import Base  # noqa
 
+from fairphonic_data.db.base import Base # noqa
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -71,12 +74,13 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    configuration = config.get_section(config.config_ini_section)
-    configuration["sqlalchemy.url"] = get_url()
-    connectable = engine_from_config(
-        configuration, prefix="sqlalchemy.", poolclass=pool.NullPool,
-    )
-
+    # configuration = config.get_section(config.config_ini_section)
+    # configuration["sqlalchemy.url"] = get_url()
+    # print(configuration)
+    # connectable = engine_from_config(
+    #     configuration, prefix="sqlalchemy.", poolclass=pool.NullPool,
+    # )
+    connectable = engine
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata
